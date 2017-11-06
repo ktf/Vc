@@ -11,12 +11,15 @@ IFS="\n\0"
 seen=()
 
 parse_file() {
+  dir=${1%/*}
+  file=${1##*/}
+  [[ "$1" =~ "/" ]] && pushd "$dir"
   #echo "${seen[@]}"
-  if [[ "$1" = ${(~j.|.)seen} ]]; then
+  if [[ "$PWD/$file" = ${(~j.|.)seen} ]]; then
+    [[ "$1" =~ "/" ]] && popd || true
     return
   fi
-  seen=(${seen[@]} "$1")
-  [[ "$1" =~ "/" ]] && pushd "${1%/*}"
+  seen=(${seen[@]} "$PWD/$file")
   while read -r line; do
     match='*include*'
     case "$line" in
@@ -28,8 +31,8 @@ parse_file() {
         echo "$line"
         ;;
     esac
-  done < "${1##*/}"
-  [[ "$1" =~ "/" ]] && popd
+  done < "$file"
+  [[ "$1" =~ "/" ]] && popd || true
 }
 
 parse_file "$start"
