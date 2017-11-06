@@ -59,8 +59,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define VC_VERSION_H_
 
 /**
- * 
-ame Version Macros
+ * \name Version Macros
  * \ingroup Utilities
  */
 //@{
@@ -75,8 +74,9 @@ ame Version Macros
  *
  * Helper macro to compare against an encoded version number.
  * Example:
- *  * #if Vc_VERSION_NUMBER >= Vc_VERSION_CHECK(1, 0, 0)
- * ndcode
+ * \code
+ * #if Vc_VERSION_NUMBER >= Vc_VERSION_CHECK(1, 0, 0)
+ * \endcode
  */
 #define Vc_VERSION_CHECK(major, minor, patch) ((major << 16) | (minor << 8) | (patch << 1))
 
@@ -132,8 +132,7 @@ Vc_CPP_WARNING("The Vc_IMPL macro was removed for Vc 2.0. "
 
 #ifdef DOXYGEN
 /**
- * 
-ame Compiler Identification Macros
+ * \name Compiler Identification Macros
  * \ingroup Utilities
  */
 //@{
@@ -515,33 +514,32 @@ ame Compiler Identification Macros
 #define Vc_FREE_STORE_OPERATORS_ALIGNED(align_)
 #else  // Vc_CXX17
 #define Vc_FREE_STORE_OPERATORS_ALIGNED(align_)                                          \
-    /**
-ame new/delete overloads for correct alignment */                               \
+    /**\name new/delete overloads for correct alignment */                               \
     /**@{*/                                                                              \
-    /*!rief Allocates correctly aligned memory */                                      \
+    /*!\brief Allocates correctly aligned memory */                                      \
     Vc_ALWAYS_INLINE void *operator new(size_t size)                                     \
     {                                                                                    \
         return Vc::Common::aligned_malloc<align_>(size);                                 \
     }                                                                                    \
-    /*!rief Returns \p p. */                                                           \
+    /*!\brief Returns \p p. */                                                           \
     Vc_ALWAYS_INLINE void *operator new(size_t, void *p) { return p; }                   \
-    /*!rief Allocates correctly aligned memory */                                      \
+    /*!\brief Allocates correctly aligned memory */                                      \
     Vc_ALWAYS_INLINE void *operator new[](size_t size)                                   \
     {                                                                                    \
         return Vc::Common::aligned_malloc<align_>(size);                                 \
     }                                                                                    \
-    /*!rief Returns \p p. */                                                           \
+    /*!\brief Returns \p p. */                                                           \
     Vc_ALWAYS_INLINE void *operator new[](size_t, void *p) { return p; }                 \
-    /*!rief Frees aligned memory. */                                                   \
+    /*!\brief Frees aligned memory. */                                                   \
     Vc_ALWAYS_INLINE void operator delete(void *ptr, size_t) { Vc::Common::free(ptr); }  \
-    /*!rief Does nothing. */                                                           \
+    /*!\brief Does nothing. */                                                           \
     Vc_ALWAYS_INLINE void operator delete(void *, void *) {}                             \
-    /*!rief Frees aligned memory. */                                                   \
+    /*!\brief Frees aligned memory. */                                                   \
     Vc_ALWAYS_INLINE void operator delete[](void *ptr, size_t)                           \
     {                                                                                    \
         Vc::Common::free(ptr);                                                           \
     }                                                                                    \
-    /*!rief Does nothing. */                                                           \
+    /*!\brief Does nothing. */                                                           \
     Vc_ALWAYS_INLINE void operator delete[](void *, void *) {}                           \
     /**@}*/                                                                              \
     Vc_NOTHING_EXPECTING_SEMICOLON
@@ -783,7 +781,7 @@ enum MallocAlignment {
  *
  * Enum to identify a certain SIMD instruction set.
  *
- * You can use ef CurrentImplementation for the currently active implementation.
+ * You can use \ref CurrentImplementation for the currently active implementation.
  *
  * \see ExtraInstructions
  */
@@ -848,7 +846,7 @@ enum ExtraInstructions : std::uint_least32_t { // TODO: make enum class
  * This class identifies the specific implementation %Vc uses in the current translation
  * unit in terms of a type.
  *
- * Most importantantly, the type ef CurrentImplementation instantiates the class
+ * Most importantantly, the type \ref CurrentImplementation instantiates the class
  * template with the bitmask identifying the current implementation. The contents of the
  * bitmask can be queried with the static member functions of the class.
  */
@@ -934,14 +932,12 @@ using CurrentImplementation = ImplementationT<
  * \ingroup Utilities
  * \headerfile version.h <Vc/version.h>
  *
- * eturns the version string of the %Vc headers.
+ * \returns the version string of the %Vc headers.
  *
- * 
-ote There exists a built-in check that ensures on application startup that the %Vc version of the
+ * \note There exists a built-in check that ensures on application startup that the %Vc version of the
  * library (link time) and the headers (compile time) are equal. A mismatch between headers and
  * library could lead to errors that are very hard to debug.
- * 
-ote If you need to disable the check (it costs a very small amount of application startup time)
+ * \note If you need to disable the check (it costs a very small amount of application startup time)
  * you can define Vc_NO_VERSION_CHECK at compile time.
  */
 inline const char *versionString() { return Vc_VERSION_STRING; }
@@ -950,7 +946,7 @@ inline const char *versionString() { return Vc_VERSION_STRING; }
  * \ingroup Utilities
  * \headerfile version.h <Vc/version.h>
  *
- * eturns the version of the %Vc headers encoded in an integer.
+ * \returns the version of the %Vc headers encoded in an integer.
  */
 constexpr unsigned int versionNumber() { return Vc_VERSION_NUMBER; }
 
@@ -1256,14 +1252,15 @@ namespace Traits
  *
  * Specialize this type for your container class if you need to make it usable with SIMD
  * gathers/scatters. Example:
- *  * namespace Vc
+ * \code
+ * namespace Vc
  * {
  * namespace Traits
  * {
  * template<typename T> struct has_no_allocated_data_impl<MyContainer<T>> : public std::true_type {};
  * }
  * }
- * ndcode
+ * \endcode
  *
  * \see has_no_allocated_data
  */
@@ -2462,8 +2459,7 @@ Vc_ALWAYS_INLINE void assertCorrectAlignment(const T *ptr)
     detail::unused(is_aligned);
 #else
     if (Vc_IS_UNLIKELY(!is_aligned(ptr))) {
-        std::fprintf(stderr, "A load with incorrect alignment has just been called. Look at the stacktrace to find the guilty load.
-");
+        std::fprintf(stderr, "A load with incorrect alignment has just been called. Look at the stacktrace to find the guilty load.\n");
         std::abort();
     }
 #endif
@@ -4846,11 +4842,11 @@ struct Color {
     const char *data;
 };
 
-static constexpr Color red = {"[1;40;31m"};
-static constexpr Color green = {"[1;40;32m"};
-static constexpr Color yellow = {"[1;40;33m"};
-static constexpr Color blue = {"[1;40;34m"};
-static constexpr Color normal = {"[0m"};
+static constexpr Color red = {"\033[1;40;31m"};
+static constexpr Color green = {"\033[1;40;32m"};
+static constexpr Color yellow = {"\033[1;40;33m"};
+static constexpr Color blue = {"\033[1;40;34m"};
+static constexpr Color normal = {"\033[0m"};
 
 inline std::ostream &operator<<(std::ostream &out, const Color &c)
 {
@@ -8568,8 +8564,7 @@ template <> Vc_INTRINSIC auto cmple_ulong_mask<4>(__m512i x, __m512i y)
  * \internal
  * Abstraction for simplifying load operations in the SSE/AVX/AVX512 implementations
  *
- * 
-ote The number in the suffix signifies the number of Bytes
+ * \note The number in the suffix signifies the number of Bytes
  */
 #ifdef Vc_HAVE_SSE2
 template <class T> Vc_INTRINSIC __m128i load2(const T *mem, when_aligned<2>)

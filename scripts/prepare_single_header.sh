@@ -28,7 +28,7 @@ parse_file() {
         parse_file "$include"
         ;;
       *)
-        echo "$line"
+        printf "%s\n" "$line"
         ;;
     esac
   done < "$file"
