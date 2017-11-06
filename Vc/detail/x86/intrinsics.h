@@ -28,13 +28,16 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef VC_SIMD_X86_H_
 #define VC_SIMD_X86_H_
 
+#ifndef VC_SIMD_CONST_H_
+#error "\"detail/const.h\" must be included before \"detail/aarch/intrinsics.h\""
+#endif
+
 #include <limits>
 #include <climits>
 #include <cstring>
 
 #include "../macros.h"
 #include "../detail.h"
-#include "../const.h"
 
 #ifdef Vc_HAVE_SSE
 

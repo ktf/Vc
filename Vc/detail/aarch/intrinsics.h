@@ -28,10 +28,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef VC_SIMD_AARCH_H_
 #define VC_SIMD_AARCH_H_
 
+#ifndef VC_SIMD_CONST_H_
+#error "\"detail/const.h\" must be included before \"detail/aarch/intrinsics.h\""
+#endif
+
 #include <limits>
 #include "../macros.h"
 #include "../detail.h"
-#include "../const.h"
 #include <arm_neon.h>
 
 Vc_VERSIONED_NAMESPACE_BEGIN

@@ -31,6 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <iosfwd>
 
 #include "macros.h"
+#include "const.h"
 #ifdef Vc_HAVE_NEON
 #include "aarch/intrinsics.h"
 #else 
