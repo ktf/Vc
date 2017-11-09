@@ -361,8 +361,8 @@ Vc_INTRINSIC std::enable_if_t<(N == native_simd<T>::size()), native_simd<T>>
 to_native(const fixed_size_simd<T, N> &x)
 {
     alignas(memory_alignment_v<native_simd<T>>) T mem[N];
-    x.copy_to(mem, flags::vector_aligned);
-    return {mem, flags::vector_aligned};
+    x.copy_to(mem, vector_aligned);
+    return {mem, vector_aligned};
 }
 
 template <class T, size_t N>
@@ -377,8 +377,8 @@ Vc_INTRINSIC std::enable_if_t<(N == simd<T>::size()), simd<T>> to_compatible(
     const simd<T, simd_abi::fixed_size<N>> &x)
 {
     alignas(memory_alignment_v<simd<T>>) T mem[N];
-    x.copy_to(mem, flags::vector_aligned);
-    return {mem, flags::vector_aligned};
+    x.copy_to(mem, vector_aligned);
+    return {mem, vector_aligned};
 }
 
 template <class T, size_t N>

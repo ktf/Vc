@@ -1103,15 +1103,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Vc_VERSIONED_NAMESPACE_BEGIN
 using size_t = std::size_t;
 
-namespace flags
-{
 struct element_aligned_tag {};
 struct vector_aligned_tag {};
 template <size_t> struct overaligned_tag {};
 Vc_INLINEV constexpr element_aligned_tag element_aligned = {};
 Vc_INLINEV constexpr vector_aligned_tag vector_aligned = {};
 template <size_t N> Vc_INLINEV constexpr overaligned_tag<N> overaligned = {};
-}  // namespace flags
 Vc_VERSIONED_NAMESPACE_END
 
 #endif  // VC_SIMD_FLAGS_H_
@@ -2711,13 +2708,13 @@ struct converts_to_higher_integer_rank<From, To, false>
 // is_aligned(_v){{{1
 template <class Flag, size_t Alignment> struct is_aligned;
 template <size_t Alignment>
-struct is_aligned<flags::vector_aligned_tag, Alignment> : public std::true_type {
+struct is_aligned<vector_aligned_tag, Alignment> : public std::true_type {
 };
 template <size_t Alignment>
-struct is_aligned<flags::element_aligned_tag, Alignment> : public std::false_type {
+struct is_aligned<element_aligned_tag, Alignment> : public std::false_type {
 };
 template <size_t GivenAlignment, size_t Alignment>
-struct is_aligned<flags::overaligned_tag<GivenAlignment>, Alignment>
+struct is_aligned<overaligned_tag<GivenAlignment>, Alignment>
     : public std::integral_constant<bool, (GivenAlignment >= Alignment)> {
 };
 template <class Flag, size_t Alignment>
@@ -2732,9 +2729,9 @@ template <size_t Alignment>
 class when_aligned
 {
 public:
-    constexpr when_aligned(flags::vector_aligned_tag) {}
+    constexpr when_aligned(vector_aligned_tag) {}
     template <size_t Given, class = std::enable_if_t<(Given >= Alignment)>>
-    constexpr when_aligned(flags::overaligned_tag<Given>)
+    constexpr when_aligned(overaligned_tag<Given>)
     {
     }
 };
@@ -2742,9 +2739,9 @@ template <size_t Alignment>
 class when_unaligned
 {
 public:
-    constexpr when_unaligned(flags::element_aligned_tag) {}
+    constexpr when_unaligned(element_aligned_tag) {}
     template <size_t Given, class = std::enable_if_t<(Given < Alignment)>>
-    constexpr when_unaligned(flags::overaligned_tag<Given>)
+    constexpr when_unaligned(overaligned_tag<Given>)
     {
     }
 };
@@ -3288,8 +3285,8 @@ Vc_INTRINSIC std::enable_if_t<(N == native_simd<T>::size()), native_simd<T>>
 to_native(const fixed_size_simd<T, N> &x)
 {
     alignas(memory_alignment_v<native_simd<T>>) T mem[N];
-    x.copy_to(mem, flags::vector_aligned);
-    return {mem, flags::vector_aligned};
+    x.copy_to(mem, vector_aligned);
+    return {mem, vector_aligned};
 }
 
 template <class T, size_t N>
@@ -3304,8 +3301,8 @@ Vc_INTRINSIC std::enable_if_t<(N == simd<T>::size()), simd<T>> to_compatible(
     const simd<T, simd_abi::fixed_size<N>> &x)
 {
     alignas(memory_alignment_v<simd<T>>) T mem[N];
-    x.copy_to(mem, flags::vector_aligned);
-    return {mem, flags::vector_aligned};
+    x.copy_to(mem, vector_aligned);
+    return {mem, vector_aligned};
 }
 
 template <class T, size_t N>
@@ -4173,7 +4170,7 @@ public:
          detail::negation<std::is_same<abi_type, Abi2>>,
              std::is_same<abi_type, simd_abi::fixed_size<size_v>>>::value> = nullarg)
     {
-        x.copy_to(&d[0], flags::vector_aligned);
+        x.copy_to(&d[0], vector_aligned);
     }
     */
 
@@ -4460,7 +4457,7 @@ public:
                         detail::negation<detail::is_narrowing_conversion<U, value_type>>,
                         detail::converts_to_higher_integer_rank<U, value_type>>::value,
             void *> = nullptr)
-        : simd{static_cast<std::array<U, size()>>(x).data(), flags::vector_aligned}
+        : simd{static_cast<std::array<U, size()>>(x).data(), vector_aligned}
     {
     }
 
@@ -4476,7 +4473,7 @@ public:
                                     std::is_convertible<U, value_type>>,
                         detail::is_narrowing_conversion<U, value_type>>::value,
             void *> = nullptr)
-        : simd{static_cast<std::array<U, size()>>(x).data(), flags::vector_aligned}
+        : simd{static_cast<std::array<U, size()>>(x).data(), vector_aligned}
     {
     }
 
@@ -4498,7 +4495,7 @@ public:
         std::enable_if_t<detail::allow_conversion_ctor3<value_type, Abi, U, Abi2>::value,
                          void *> = nullptr)
     {
-        x.copy_to(d.data(), flags::overaligned<alignof(simd)>);
+        x.copy_to(d.data(), overaligned<alignof(simd)>);
     }
 #endif  // Vc_EXPERIMENTAL
 
@@ -4520,7 +4517,7 @@ public:
         constexpr auto N = size();
         alignas(memory_alignment<simd>::value) static constexpr value_type mem[N] = {
             value_type(Indexes)...};
-        return simd(mem, flags::vector_aligned);
+        return simd(mem, vector_aligned);
     }
     static Vc_ALWAYS_INLINE simd seq() {
         return seq(std::make_index_sequence<size()>());
@@ -11651,7 +11648,7 @@ template <> Vc_INTRINSIC x_i08 Vc_VDECL convert_to<x_i08>(x_i16 v) {
 #if defined Vc_HAVE_AVX512VL && defined Vc_HAVE_AVX512BW
     return _mm_cvtepi16_epi8(v);
 #elif defined Vc_HAVE_SSSE3
-    auto shuf = load16(sse_const::cvti16_i08_shuffle, flags::vector_aligned);
+    auto shuf = load16(sse_const::cvti16_i08_shuffle, vector_aligned);
     return _mm_shuffle_epi8(v, shuf);
 #else
     auto a = _mm_unpacklo_epi8(v, v);  // 00.. 11.. 22.. 33..
@@ -11669,7 +11666,7 @@ template <> Vc_INTRINSIC x_i08 Vc_VDECL convert_to<x_i08>(x_i16 v0, x_i16 v1)
 #if defined Vc_HAVE_AVX512VL && defined Vc_HAVE_AVX512BW
     return _mm256_cvtepi16_epi8(concat(v0, v1));
 #elif defined Vc_HAVE_SSSE3
-    auto shuf = load16(sse_const::cvti16_i08_shuffle, flags::vector_aligned);
+    auto shuf = load16(sse_const::cvti16_i08_shuffle, vector_aligned);
     return _mm_unpacklo_epi64(_mm_shuffle_epi8(v0, shuf), _mm_shuffle_epi8(v1, shuf));
 #else
     auto a = _mm_unpacklo_epi8(v0, v1);  // 08.. 19.. 2A.. 3B..
@@ -11690,10 +11687,10 @@ template <> Vc_INTRINSIC x_i08 Vc_VDECL convert_to<x_i08>(y_i16 v0)
 #elif defined Vc_HAVE_AVX2
     auto a = _mm256_shuffle_epi8(
         v0, _mm256_broadcastsi128_si256(
-                load16(sse_const::cvti16_i08_shuffle, flags::vector_aligned)));
+                load16(sse_const::cvti16_i08_shuffle, vector_aligned)));
     return _mm_unpacklo_epi64(lo128(a), hi128(a));
 #else
-    auto shuf = load16(sse_const::cvti16_i08_shuffle, flags::vector_aligned);
+    auto shuf = load16(sse_const::cvti16_i08_shuffle, vector_aligned);
     return _mm_unpacklo_epi64(_mm_shuffle_epi8(lo128(v0), shuf),
                               _mm_shuffle_epi8(hi128(v0), shuf));
 #endif
@@ -15110,7 +15107,7 @@ struct sse_simd_impl : public generic_simd_impl<sse_simd_impl> {
         when_aligned<alignof(uint16_t)>, type_tag<T>, tag<4> = {}) Vc_NOEXCEPT_OR_IN_TEST
     {
         return x86::convert<simd_member_type<U>, simd_member_type<T>>(
-            intrin_cast<detail::intrinsic_type<U, size<U>()>>(load2(mem, flags::vector_aligned)));
+            intrin_cast<detail::intrinsic_type<U, size<U>()>>(load2(mem, vector_aligned)));
     }
 
     template <class T, class U>
@@ -18150,7 +18147,7 @@ struct avx512_simd_impl : public generic_simd_impl<avx512_simd_impl> {
         for (size_t i = 0; i < size<T>(); ++i) {
             tmp[i] = static_cast<T>(mem[i]);
         }
-        return load(&tmp[0], flags::vector_aligned, type_tag<T>());
+        return load(&tmp[0], vector_aligned, type_tag<T>());
 #else
         return generate_from_n_evaluations<size<T>(), simd_member_type<T>>(
             [&](auto i) { return static_cast<T>(mem[i]); });
@@ -20652,10 +20649,10 @@ private:
         std::size_t offset = 0;
         return {V<A0>(reinterpret_cast<const detail::may_alias<T> *>(&x) +
                           (offset += V<A0>::size()) - V<A0>::size(),
-                      flags::vector_aligned),
+                      vector_aligned),
                 V<As>(reinterpret_cast<const detail::may_alias<T> *>(&x) +
                           (offset += V<As>::size()) - V<As>::size(),
-                      flags::element_aligned)...};
+                      element_aligned)...};
     }
 
     template <class NotFixedAbi, class... Bs, size_t... Indexes0, size_t... Indexes1>

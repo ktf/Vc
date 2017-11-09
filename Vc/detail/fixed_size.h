@@ -1075,10 +1075,10 @@ private:
         std::size_t offset = 0;
         return {V<A0>(reinterpret_cast<const detail::may_alias<T> *>(&x) +
                           (offset += V<A0>::size()) - V<A0>::size(),
-                      flags::vector_aligned),
+                      vector_aligned),
                 V<As>(reinterpret_cast<const detail::may_alias<T> *>(&x) +
                           (offset += V<As>::size()) - V<As>::size(),
-                      flags::element_aligned)...};
+                      element_aligned)...};
     }
 
     template <class NotFixedAbi, class... Bs, size_t... Indexes0, size_t... Indexes1>
