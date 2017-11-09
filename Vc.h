@@ -1108,9 +1108,9 @@ namespace flags
 struct element_aligned_tag {};
 struct vector_aligned_tag {};
 template <size_t> struct overaligned_tag {};
-constexpr element_aligned_tag element_aligned = {};
-constexpr vector_aligned_tag vector_aligned = {};
-template <size_t N> constexpr overaligned_tag<N> overaligned = {};
+Vc_INLINEV constexpr element_aligned_tag element_aligned = {};
+Vc_INLINEV constexpr vector_aligned_tag vector_aligned = {};
+template <size_t N> Vc_INLINEV constexpr overaligned_tag<N> overaligned = {};
 }  // namespace flags
 Vc_VERSIONED_NAMESPACE_END
 
@@ -2376,12 +2376,12 @@ struct has_expected_sizeof : public std::integral_constant<bool, sizeof(T) == Ex
 
 // value aliases
 template <class... Ts>
-constexpr bool conjunction_v = all<Ts...>::value;
-template <class... Ts> constexpr bool disjunction_v = any<Ts...>::value;
-template <class T> constexpr bool negation_v = negation<T>::value;
-template <class... Ts> constexpr bool none_v = none<Ts...>::value;
+Vc_INLINEV constexpr bool conjunction_v = all<Ts...>::value;
+template <class... Ts> Vc_INLINEV constexpr bool disjunction_v = any<Ts...>::value;
+template <class T> Vc_INLINEV constexpr bool negation_v = negation<T>::value;
+template <class... Ts> Vc_INLINEV constexpr bool none_v = none<Ts...>::value;
 template <class T, std::size_t Expected>
-constexpr bool has_expected_sizeof_v = has_expected_sizeof<T, Expected>::value;
+Vc_INLINEV constexpr bool has_expected_sizeof_v = has_expected_sizeof<T, Expected>::value;
 
 // value_type_or_identity
 template <class T> typename T::value_type value_type_or_identity_impl(int);
@@ -2510,15 +2510,15 @@ template <class T> using equal_int_type_t = typename equal_int_type<T>::type;
 // work around crazy semantics of unsigned integers of lower rank than int:
 // Before applying an operator the operands are promoted to int. In which case over- or
 // underflow is UB, even though the operand types were unsigned.
-template <class T> static Vc_INTRINSIC const T &promote_preserving_unsigned(const T &x)
+template <class T> Vc_INTRINSIC const T &promote_preserving_unsigned(const T &x)
 {
     return x;
 }
-static Vc_INTRINSIC unsigned int promote_preserving_unsigned(const unsigned char &x)
+Vc_INTRINSIC unsigned int promote_preserving_unsigned(const unsigned char &x)
 {
     return x;
 }
-static Vc_INTRINSIC unsigned int promote_preserving_unsigned(const unsigned short &x)
+Vc_INTRINSIC unsigned int promote_preserving_unsigned(const unsigned short &x)
 {
     return x;
 }
@@ -2623,7 +2623,7 @@ template <class T> using get_impl_t = typename get_impl<T>::type;
  * \internal
  * Returns the next power of 2 larger than or equal to \p x.
  */
-static constexpr std::size_t next_power_of_2(std::size_t x)
+constexpr std::size_t next_power_of_2(std::size_t x)
 {
     return (x & (x - 1)) == 0 ? x : next_power_of_2((x | (x >> 1)) + 1);
 }
@@ -2655,7 +2655,7 @@ static constexpr struct private_init_t {} private_init = {};
 static constexpr struct bitset_init_t {} bitset_init = {};
 
 // size_tag{{{1
-template <size_t N> static constexpr size_constant<N> size_tag = {};
+template <size_t N> Vc_INLINEV constexpr size_constant<N> size_tag = {};
 
 // identity/id{{{1
 template <class T> struct identity {
@@ -2721,7 +2721,7 @@ struct is_aligned<flags::overaligned_tag<GivenAlignment>, Alignment>
     : public std::integral_constant<bool, (GivenAlignment >= Alignment)> {
 };
 template <class Flag, size_t Alignment>
-constexpr bool is_aligned_v = is_aligned<Flag, Alignment>::value;
+Vc_INLINEV constexpr bool is_aligned_v = is_aligned<Flag, Alignment>::value;
 
 // when_(un)aligned{{{1
 /**
@@ -5621,7 +5621,7 @@ template <class T> struct is_intrinsic : public std::false_type {};
 template <> struct is_intrinsic<float32x4_t> : public std::true_type {};
 template <> struct is_intrinsic<float64x2_t> : public std::true_type {};
 template <> struct is_intrinsic<int32x4_t> : public std::true_type {};
-template <class T> constexpr bool is_intrinsic_v = is_intrinsic<T>::value;
+template <class T> Vc_INLINEV constexpr bool is_intrinsic_v = is_intrinsic<T>::value;
 
 // is_builtin_vector{{{1
 template <class T> struct is_builtin_vector : public std::false_type {};
@@ -5639,7 +5639,7 @@ template <> struct is_builtin_vector<builtin_type<ushort, 8>> : public std::true
 template <> struct is_builtin_vector<builtin_type< schar,16>> : public std::true_type {};
 template <> struct is_builtin_vector<builtin_type< uchar,16>> : public std::true_type {};
 #endif
-template <class T> constexpr bool is_builtin_vector_v = is_builtin_vector<T>::value;
+template <class T> Vc_INLINEV constexpr bool is_builtin_vector_v = is_builtin_vector<T>::value;
 
 // intrin_cast{{{1
 template<typename T> Vc_INTRINSIC_L T intrin_cast(float32x4_t  v) Vc_INTRINSIC_R;
@@ -6259,7 +6259,7 @@ template <> struct is_intrinsic<__m512 > : public std::true_type {};
 template <> struct is_intrinsic<__m512d> : public std::true_type {};
 template <> struct is_intrinsic<__m512i> : public std::true_type {};
 #endif  // Vc_HAVE_AVX512F
-template <class T> constexpr bool is_intrinsic_v = is_intrinsic<T>::value;
+template <class T> Vc_INLINEV constexpr bool is_intrinsic_v = is_intrinsic<T>::value;
 
 // is_builtin_vector{{{1
 template <class T> struct is_builtin_vector : public std::false_type {};
@@ -6307,7 +6307,7 @@ template <> struct is_builtin_vector<builtin_type< schar,16 * 4>> : public std::
 template <> struct is_builtin_vector<builtin_type< uchar,16 * 4>> : public std::true_type {};
 #endif  // Vc_HAVE_AVX512F
 #endif  // Vc_USE_BUILTIN_VECTOR_TYPES
-template <class T> constexpr bool is_builtin_vector_v = is_builtin_vector<T>::value;
+template <class T> Vc_INLINEV constexpr bool is_builtin_vector_v = is_builtin_vector<T>::value;
 
 // zeroExtend{{{1
 #ifdef Vc_HAVE_AVX
@@ -7127,7 +7127,7 @@ template <> Vc_INTRINSIC Vc_CONST __m256d avx_2_pow_31<double>() { return broadc
 template <> Vc_INTRINSIC Vc_CONST __m256i avx_2_pow_31<  uint>() { return lowest32<int>(); }
 #endif  // Vc_HAVE_AVX
 
-static Vc_INTRINSIC __m128i shift_msb_to_lsb(__m128i v)
+Vc_INTRINSIC __m128i shift_msb_to_lsb(__m128i v)
 {
 #if defined Vc_GCC && Vc_GCC < 0x60400 && defined Vc_HAVE_AVX512F &&                     \
     !defined Vc_HAVE_AVX512VL
@@ -7141,7 +7141,7 @@ static Vc_INTRINSIC __m128i shift_msb_to_lsb(__m128i v)
 }
 
 #ifdef Vc_HAVE_AVX2
-static Vc_INTRINSIC __m256i shift_msb_to_lsb(__m256i v)
+Vc_INTRINSIC __m256i shift_msb_to_lsb(__m256i v)
 {
 #if defined Vc_GCC && Vc_GCC < 0x60400 && defined Vc_HAVE_AVX512F &&                     \
     !defined Vc_HAVE_AVX512VL

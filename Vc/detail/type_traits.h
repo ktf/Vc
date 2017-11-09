@@ -100,12 +100,12 @@ struct has_expected_sizeof : public std::integral_constant<bool, sizeof(T) == Ex
 
 // value aliases
 template <class... Ts>
-constexpr bool conjunction_v = all<Ts...>::value;
-template <class... Ts> constexpr bool disjunction_v = any<Ts...>::value;
-template <class T> constexpr bool negation_v = negation<T>::value;
-template <class... Ts> constexpr bool none_v = none<Ts...>::value;
+Vc_INLINEV constexpr bool conjunction_v = all<Ts...>::value;
+template <class... Ts> Vc_INLINEV constexpr bool disjunction_v = any<Ts...>::value;
+template <class T> Vc_INLINEV constexpr bool negation_v = negation<T>::value;
+template <class... Ts> Vc_INLINEV constexpr bool none_v = none<Ts...>::value;
 template <class T, std::size_t Expected>
-constexpr bool has_expected_sizeof_v = has_expected_sizeof<T, Expected>::value;
+Vc_INLINEV constexpr bool has_expected_sizeof_v = has_expected_sizeof<T, Expected>::value;
 
 // value_type_or_identity
 template <class T> typename T::value_type value_type_or_identity_impl(int);

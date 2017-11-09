@@ -153,15 +153,15 @@ template <class T> using equal_int_type_t = typename equal_int_type<T>::type;
 // work around crazy semantics of unsigned integers of lower rank than int:
 // Before applying an operator the operands are promoted to int. In which case over- or
 // underflow is UB, even though the operand types were unsigned.
-template <class T> static Vc_INTRINSIC const T &promote_preserving_unsigned(const T &x)
+template <class T> Vc_INTRINSIC const T &promote_preserving_unsigned(const T &x)
 {
     return x;
 }
-static Vc_INTRINSIC unsigned int promote_preserving_unsigned(const unsigned char &x)
+Vc_INTRINSIC unsigned int promote_preserving_unsigned(const unsigned char &x)
 {
     return x;
 }
-static Vc_INTRINSIC unsigned int promote_preserving_unsigned(const unsigned short &x)
+Vc_INTRINSIC unsigned int promote_preserving_unsigned(const unsigned short &x)
 {
     return x;
 }
@@ -266,7 +266,7 @@ template <class T> using get_impl_t = typename get_impl<T>::type;
  * \internal
  * Returns the next power of 2 larger than or equal to \p x.
  */
-static constexpr std::size_t next_power_of_2(std::size_t x)
+constexpr std::size_t next_power_of_2(std::size_t x)
 {
     return (x & (x - 1)) == 0 ? x : next_power_of_2((x | (x >> 1)) + 1);
 }
@@ -298,7 +298,7 @@ static constexpr struct private_init_t {} private_init = {};
 static constexpr struct bitset_init_t {} bitset_init = {};
 
 // size_tag{{{1
-template <size_t N> static constexpr size_constant<N> size_tag = {};
+template <size_t N> Vc_INLINEV constexpr size_constant<N> size_tag = {};
 
 // identity/id{{{1
 template <class T> struct identity {
@@ -364,7 +364,7 @@ struct is_aligned<flags::overaligned_tag<GivenAlignment>, Alignment>
     : public std::integral_constant<bool, (GivenAlignment >= Alignment)> {
 };
 template <class Flag, size_t Alignment>
-constexpr bool is_aligned_v = is_aligned<Flag, Alignment>::value;
+Vc_INLINEV constexpr bool is_aligned_v = is_aligned<Flag, Alignment>::value;
 
 // when_(un)aligned{{{1
 /**

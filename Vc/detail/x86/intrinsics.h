@@ -153,7 +153,7 @@ template <> struct is_intrinsic<__m512 > : public std::true_type {};
 template <> struct is_intrinsic<__m512d> : public std::true_type {};
 template <> struct is_intrinsic<__m512i> : public std::true_type {};
 #endif  // Vc_HAVE_AVX512F
-template <class T> constexpr bool is_intrinsic_v = is_intrinsic<T>::value;
+template <class T> Vc_INLINEV constexpr bool is_intrinsic_v = is_intrinsic<T>::value;
 
 // is_builtin_vector{{{1
 template <class T> struct is_builtin_vector : public std::false_type {};
@@ -201,7 +201,7 @@ template <> struct is_builtin_vector<builtin_type< schar,16 * 4>> : public std::
 template <> struct is_builtin_vector<builtin_type< uchar,16 * 4>> : public std::true_type {};
 #endif  // Vc_HAVE_AVX512F
 #endif  // Vc_USE_BUILTIN_VECTOR_TYPES
-template <class T> constexpr bool is_builtin_vector_v = is_builtin_vector<T>::value;
+template <class T> Vc_INLINEV constexpr bool is_builtin_vector_v = is_builtin_vector<T>::value;
 
 // zeroExtend{{{1
 #ifdef Vc_HAVE_AVX
@@ -1021,7 +1021,7 @@ template <> Vc_INTRINSIC Vc_CONST __m256d avx_2_pow_31<double>() { return broadc
 template <> Vc_INTRINSIC Vc_CONST __m256i avx_2_pow_31<  uint>() { return lowest32<int>(); }
 #endif  // Vc_HAVE_AVX
 
-static Vc_INTRINSIC __m128i shift_msb_to_lsb(__m128i v)
+Vc_INTRINSIC __m128i shift_msb_to_lsb(__m128i v)
 {
 #if defined Vc_GCC && Vc_GCC < 0x60400 && defined Vc_HAVE_AVX512F &&                     \
     !defined Vc_HAVE_AVX512VL
@@ -1035,7 +1035,7 @@ static Vc_INTRINSIC __m128i shift_msb_to_lsb(__m128i v)
 }
 
 #ifdef Vc_HAVE_AVX2
-static Vc_INTRINSIC __m256i shift_msb_to_lsb(__m256i v)
+Vc_INTRINSIC __m256i shift_msb_to_lsb(__m256i v)
 {
 #if defined Vc_GCC && Vc_GCC < 0x60400 && defined Vc_HAVE_AVX512F &&                     \
     !defined Vc_HAVE_AVX512VL

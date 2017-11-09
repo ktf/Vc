@@ -115,7 +115,7 @@ template <class T> struct is_intrinsic : public std::false_type {};
 template <> struct is_intrinsic<float32x4_t> : public std::true_type {};
 template <> struct is_intrinsic<float64x2_t> : public std::true_type {};
 template <> struct is_intrinsic<int32x4_t> : public std::true_type {};
-template <class T> constexpr bool is_intrinsic_v = is_intrinsic<T>::value;
+template <class T> Vc_INLINEV constexpr bool is_intrinsic_v = is_intrinsic<T>::value;
 
 // is_builtin_vector{{{1
 template <class T> struct is_builtin_vector : public std::false_type {};
@@ -133,7 +133,7 @@ template <> struct is_builtin_vector<builtin_type<ushort, 8>> : public std::true
 template <> struct is_builtin_vector<builtin_type< schar,16>> : public std::true_type {};
 template <> struct is_builtin_vector<builtin_type< uchar,16>> : public std::true_type {};
 #endif
-template <class T> constexpr bool is_builtin_vector_v = is_builtin_vector<T>::value;
+template <class T> Vc_INLINEV constexpr bool is_builtin_vector_v = is_builtin_vector<T>::value;
 
 // intrin_cast{{{1
 template<typename T> Vc_INTRINSIC_L T intrin_cast(float32x4_t  v) Vc_INTRINSIC_R;
