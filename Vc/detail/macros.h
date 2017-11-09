@@ -129,6 +129,11 @@ Vc_CPP_WARNING("The Vc_IMPL macro was removed for Vc 2.0. "
 #if __cplusplus > 201700L
 #  define Vc_CXX17 1
 #endif
+#if defined __cpp_inline_variables && __cpp_inline_variables >= 201606
+#  define Vc_INLINEV inline
+#else
+#  define Vc_INLINEV
+#endif
 // }}}
 
 // C++ does not allow attaching overalignment to an existing type via an alias. In

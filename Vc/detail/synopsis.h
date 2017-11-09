@@ -39,7 +39,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Vc_VERSIONED_NAMESPACE_BEGIN
 namespace simd_abi
 {
-constexpr int max_fixed_size = 32;
+Vc_INLINEV constexpr int max_fixed_size = 32;
 template <int N> struct fixed_size {};
 struct scalar {};
 struct sse {};
@@ -130,13 +130,13 @@ template <> struct is_abi_tag<simd_abi::sse> : public std::true_type {};
 template <> struct is_abi_tag<simd_abi::avx> : public std::true_type {};
 template <> struct is_abi_tag<simd_abi::avx512> : public std::true_type {};
 template <> struct is_abi_tag<simd_abi::neon> : public std::true_type {};
-template <class T> constexpr bool is_abi_tag_v = is_abi_tag<T>::value;
+template <class T> Vc_INLINEV constexpr bool is_abi_tag_v = is_abi_tag<T>::value;
 
 template <class T> struct is_simd : public std::false_type {};
-template <class T> constexpr bool is_simd_v = is_simd<T>::value;
+template <class T> Vc_INLINEV constexpr bool is_simd_v = is_simd<T>::value;
 
 template <class T> struct is_simd_mask : public std::false_type {};
-template <class T> constexpr bool is_simd_mask_v = is_simd_mask<T>::value;
+template <class T> Vc_INLINEV constexpr bool is_simd_mask_v = is_simd_mask<T>::value;
 
 template <class T, class Abi = simd_abi::detail::default_abi<T>> struct simd_size;
 template <class T> struct simd_size<T, simd_abi::scalar> : public detail::size_constant<1> {};
@@ -146,7 +146,7 @@ template <class T> struct simd_size<T, simd_abi::avx512> : public detail::size_c
 template <class T> struct simd_size<T, simd_abi::neon  > : public detail::size_constant<16 / sizeof(T)> {};
 template <class T, int N> struct simd_size<T, simd_abi::fixed_size<N>> : public detail::size_constant<N> {};
 template <class T, class Abi = simd_abi::detail::default_abi<T>>
-constexpr size_t simd_size_v = simd_size<T, Abi>::value;
+Vc_INLINEV constexpr size_t simd_size_v = simd_size<T, Abi>::value;
 
 namespace detail
 {
@@ -246,7 +246,7 @@ struct memory_alignment
     : public detail::size_constant<detail::next_power_of_2(sizeof(U) * T::size())> {
 };
 template <class T, class U = typename T::value_type>
-constexpr size_t memory_alignment_v = memory_alignment<T, U>::value;
+Vc_INLINEV constexpr size_t memory_alignment_v = memory_alignment<T, U>::value;
 
 // class template simd [simd]
 template <class T, class Abi = simd_abi::detail::default_abi<T>> class simd;
